@@ -1,0 +1,33 @@
+.menu {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffffcc;
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 90%;
+  max-width: 340px;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  padding: 0.75rem 0;
+  margin-bottom: 1rem;
+}
+
+.menu-item {
+  font-size: 1.6rem;
+  color: #E67A3C;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.menu-item:hover {
+  transform: translateY(-3px);
+}
+
+.menu-item.active {
+  transform: translateY(-5px);
+  color: #d46525;
+}
