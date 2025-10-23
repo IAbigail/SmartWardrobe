@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "../firebase/firebase";
-import Register from "./Register"; // 👈 import nou
+import Register from "./Register";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [showRegister, setShowRegister] = useState(false); // 👈 stare nouă
+  const [showRegister, setShowRegister] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,7 +22,16 @@ export default function Login() {
     }
   };
 
-  if (showRegister) return <Register />; // 👈 comută pe register
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (err: any) {
+      setError("Eroare la autentificarea cu Google: " + err.message);
+    }
+  };
+
+  if (showRegister) return <Register />;
 
   return (
     <div className="flex flex-col items-center mt-10 text-white">
@@ -43,6 +56,16 @@ export default function Login() {
           Log in
         </button>
       </form>
+
+      <div className="mt-6">
+        <button
+          onClick={handleGoogleLogin}
+          className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+        >
+          🔐 Log in cu Google
+        </button>
+      </div>
+
       <p className="mt-4 text-sm text-gray-300">
         Nu ai cont?{" "}
         <button
