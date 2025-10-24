@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "./Context/AuthContext"; // <- și aici, exact așa
+import { useAuth } from "./Context/AuthContext";
 import Login from "./pages/Login";
 import Menu from "./pages/Menu";
 import Home from "./pages/Home";
@@ -8,7 +8,6 @@ import Outfits from "./pages/Outfits";
 import Closet from "./pages/Closet";
 import Favorites from "./pages/Favorites";
 import "./App.css";
-
 
 const App: React.FC = () => {
   const { currentUser, logout } = useAuth();
@@ -28,7 +27,10 @@ const App: React.FC = () => {
     <Router>
       <div className="app-container">
         <header className="header">
-          <h2>Welcome, {currentUser.email}</h2>
+          <div className="welcome">
+            <h2>Welcome,</h2>
+            <h3>{currentUser.email}</h3>
+          </div>
           <button onClick={logout} className="logout-btn">
             Logout
           </button>

@@ -1,69 +1,212 @@
-/* Global background (warm gradient to match SmartWardrobe theme) */
+/* 🌅 Background gradient */
 body {
   background: linear-gradient(180deg, #FFF2E5 0%, #FFDAB6 100%);
   min-height: 100vh;
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
-
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* App container (the phone preview frame) */
+/* 📱 Main card layout */
 .app-container {
-  background-color: #fff;
+  background-color: #FFF8F0;
   border-radius: 2rem;
   padding: 2rem 1.5rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  width: 320px;
-  height: auto;
+  box-shadow: 0 10px 25px rgba(230, 122, 60, 0.25);
+  width: 90%;
+  max-width: 600px;
+  min-height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  animation: fadeInUp 0.6s ease-out;
 }
 
-/* App title */
-.app-title {
-  font-size: 1.75rem;
-  font-weight: 700;
+/* ✨ Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 🪪 Header */
+.header {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.welcome h2 {
   color: #2E2E2E;
-  margin-bottom: 1rem;
-  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+  font-size: 1.25rem;
 }
 
-/* Weather and outfit section */
-.weather-info {
-  color: #555;
+.welcome h3 {
+  color: #E67A3C;
+  margin: 0.2rem 0 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* 🔘 Logout button */
+.logout-btn {
+  background-color: #D87943;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 1rem;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-top: 0.8rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #e58952;
+}
+
+/* 📂 Page sections (Outfits, Closet, etc.) */
+.page-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  width: 100%;
+}
+
+.section {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.section h1 {
+  font-size: 1.75rem;
   margin-bottom: 0.25rem;
-  font-size: 0.95rem;
+}
+
+.section p {
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+/* 👗 Outfits styling */
+.outfit-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  width: 100%;
 }
 
 .outfit-card {
-  background-color: #FFEBD3;
+  background-color: #FFEBD2;
   border-radius: 1.5rem;
-  padding: 1rem 1.2rem;
-  width: 100%;
-  margin-bottom: 1.5rem;
+  padding: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 4px 8px rgba(230, 122, 60, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.outfit-card:hover {
+  transform: translateY(-3px);
+}
+
+/* 👕 Closet Section */
+.add-btn {
+  background-color: #d87943;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 1.5rem;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 1.5rem 0;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(230, 122, 60, 0.15);
+}
+
+.add-btn:hover {
+  background-color: #e58952;
+  transform: translateY(-2px);
+}
+
+.closet-items {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.6rem;
+  font-size: 1.1rem;
+  color: #2e2e2e;
 }
 
-.outfit-card h2 {
-  color: #E67A3C;
-  font-size: 1.2rem;
-  margin-bottom: 0.25rem;
+.closet-items div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #ffe6cc;
+  padding: 0.6rem 1.2rem;
+  border-radius: 1rem;
+  width: fit-content;
+  box-shadow: 0 3px 6px rgba(230, 122, 60, 0.1);
+  transition: all 0.2s ease;
 }
 
-.outfit-card p {
-  font-size: 0.95rem;
-  color: #4a4a4a;
-  margin: 0.25rem 0;
+.closet-items div:hover {
+  transform: translateY(-2px);
+  background-color: #ffd5ad;
 }
 
-/* Buttons */
+/* ❤️ Favorites Section */
+.favorites-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.favorite-item {
+  background-color: #ffe6e0;
+  border-radius: 1.5rem;
+  padding: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 4px 8px rgba(230, 122, 60, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.favorite-item:hover {
+  transform: translateY(-3px);
+  background-color: #ffd0c2;
+}
+
+/* ☀️ Weather Section */
+.weather-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: #444;
+  font-size: 1rem;
+}
+
+.weather-info div {
+  background-color: #FFF0DA;
+  padding: 0.8rem 1.2rem;
+  border-radius: 1rem;
+  box-shadow: 0 3px 6px rgba(230, 122, 60, 0.1);
+}
+
+/* 🧡 Buttons (general) */
 button {
   border: none;
   border-radius: 1rem;
@@ -86,31 +229,14 @@ button:active {
   transform: translateY(0);
 }
 
-/* Wardrobe grid */
-.wardrobe-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.75rem;
-  margin-top: 1rem;
-  width: 100%;
-}
-
-.wardrobe-item {
-  background-color: #FFDAB6;
-  border-radius: 1rem;
-  padding: 0.75rem;
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-/* Responsive */
+/* 📱 Responsive */
 @media (max-width: 480px) {
   .app-container {
     width: 90%;
     padding: 1.5rem 1rem;
   }
 
-  .app-title {
-    font-size: 1.5rem;
+  .section h1 {
+    font-size: 1.4rem;
   }
 }
