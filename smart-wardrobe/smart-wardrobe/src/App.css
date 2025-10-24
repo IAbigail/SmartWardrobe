@@ -1,3 +1,11 @@
+/* Global background (warm gradient to match SmartWardrobe theme) */
+body {
+  background: linear-gradient(180deg, #FFF2E5 0%, #FFDAB6 100%);
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
 /* App container (the phone preview frame) */
 .app-container {
   background-color: #fff;
