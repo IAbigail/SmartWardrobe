@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "./Context/AuthContext";
+import { useAuth } from "./Context/AuthContext"; // <- și aici, exact așa
 import Login from "./pages/Login";
 import Menu from "./pages/Menu";
 import Home from "./pages/Home";
@@ -8,6 +8,7 @@ import Outfits from "./pages/Outfits";
 import Closet from "./pages/Closet";
 import Favorites from "./pages/Favorites";
 import "./App.css";
+
 
 const App: React.FC = () => {
   const { currentUser, logout } = useAuth();
