@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 const CAMERA_KEY = "smartwardrobe_camera";
 
 const CameraGallery: React.FC = () => {
-  const [photos, setPhotos] = useState<{ id: string; name: string; image: string }[]>([]);
+  const [photos, setPhotos] = useState<{ id: string; name: string; category: string; image: string }[]>([]);
+  const [filter, setFilter] = useState<"blouse" | "pants" | "shoes" | "all">("all");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +27,15 @@ const CameraGallery: React.FC = () => {
           ← Back to Closet
         </button>
 
+        {/* Category Filters */}
+        <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "1rem" }}>
+          {["all", "blouse", "pants", "shoes"].map((cat) => (
+            <button key={cat} className="add-btn px-3 py-1 text-sm" onClick={() => setFilter(cat as any)}>
+              {cat === "blouse" ? "👚 Blouses" : cat === "pants" ? "👖 Pants" : cat === "shoes" ? "👟 Shoes" : "All"}
+            </button>
+          ))}
+        </div>
+
         <div
           style={{
             display: "grid",
@@ -34,37 +44,42 @@ const CameraGallery: React.FC = () => {
             marginTop: "1.5rem",
           }}
         >
-          {photos.map((p) => (
-            <div
-              key={p.id}
-              style={{
-                backgroundColor: "#ffe6cc",
-                borderRadius: "1rem",
-                padding: "0.6rem",
-                textAlign: "center",
-              }}
-            >
-              <img
-                src={p.image}
-                alt={p.name}
-                style={{ width: "100%", height: "100px", objectFit: "cover", borderRadius: "1rem" }}
-              />
-              <button
-                onClick={() => deletePhoto(p.id)}
+          {photos
+            .filter((p) => filter === "all" || p.category === filter)
+            .map((p) => (
+              <div
+                key={p.id}
                 style={{
-                  background: "#ff6b6b",
-                  border: "none",
-                  color: "white",
-                  borderRadius: "0.6rem",
-                  padding: "0.3rem 0.6rem",
-                  marginTop: "0.4rem",
-                  cursor: "pointer",
+                  backgroundColor: "#ffe6cc",
+                  borderRadius: "1rem",
+                  padding: "0.6rem",
+                  textAlign: "center",
                 }}
               >
-                🗑️ Delete
-              </button>
-            </div>
-          ))}
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  style={{ width: "100%", height: "100px", objectFit: "cover", borderRadius: "1rem" }}
+                />
+                <p style={{ fontSize: "0.9rem", margin: "0.3rem 0" }}>
+                  {p.category === "blouse" ? "👚 Blouse" : p.category === "pants" ? "👖 Pants" : "👟 Shoes"}
+                </p>
+                <button
+                  onClick={() => deletePhoto(p.id)}
+                  style={{
+                    background: "#ff6b6b",
+                    border: "none",
+                    color: "white",
+                    borderRadius: "0.6rem",
+                    padding: "0.3rem 0.6rem",
+                    marginTop: "0.4rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  🗑️ Delete
+                </button>
+              </div>
+            ))}
         </div>
       </div>
     </div>

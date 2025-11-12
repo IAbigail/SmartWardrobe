@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const CAMERA_KEY = "smartwardrobe_camera";
+const UPLOAD_KEY = "smartwardrobe_uploads";
+
 const Closet: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const [category, setCategory] = useState<"blouse" | "pants" | "shoes">("blouse");
   const navigate = useNavigate();
-
-  // CAMERA PHOTOS STORAGE
-  const CAMERA_KEY = "smartwardrobe_camera";
-  // UPLOAD PHOTOS STORAGE
-  const UPLOAD_KEY = "smartwardrobe_uploads";
 
   const handleAddItem = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -26,11 +25,11 @@ const Closet: React.FC = () => {
       const newItem = {
         id: crypto.randomUUID(),
         name: file.name || "Photo",
+        category,
         image: reader.result as string,
       };
       localStorage.setItem(key, JSON.stringify([...saved, newItem]));
       setLoading(false);
-      // navigate to correct gallery after upload
       navigate(target === "camera" ? "/camera-gallery" : "/upload-gallery");
     };
 
@@ -41,7 +40,21 @@ const Closet: React.FC = () => {
     <div className="page-container">
       <div className="section">
         <h1>👕 Closet</h1>
-        <p>Capture or upload clothes and view them in separate galleries.</p>
+        <p>Capture or upload clothes and assign them to categories.</p>
+
+        {/* Category Selector */}
+        <div style={{ margin: "1rem 0" }}>
+          <label className="text-gray-700 font-medium mr-2">Category:</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as "blouse" | "pants" | "shoes")}
+            className="add-btn px-3 py-1 text-sm"
+          >
+            <option value="blouse">👚 Blouse</option>
+            <option value="pants">👖 Pants</option>
+            <option value="shoes">👟 Shoes</option>
+          </select>
+        </div>
 
         {/* Hidden inputs */}
         <input
@@ -62,7 +75,7 @@ const Closet: React.FC = () => {
         />
 
         {/* Buttons */}
-        <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+        <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginTop: "1rem" }}>
           <button
             className="add-btn"
             onClick={() => document.getElementById("cameraInput")?.click()}
@@ -80,13 +93,9 @@ const Closet: React.FC = () => {
           </button>
         </div>
 
-        {/* Links to view galleries */}
+        {/* Gallery Navigation */}
         <div style={{ marginTop: "2rem" }}>
-          <button
-            className="add-btn"
-            onClick={() => navigate("/camera-gallery")}
-            style={{ marginRight: "1rem" }}
-          >
+          <button className="add-btn" onClick={() => navigate("/camera-gallery")} style={{ marginRight: "1rem" }}>
             📷 View Taken Photos
           </button>
           <button className="add-btn" onClick={() => navigate("/upload-gallery")}>
