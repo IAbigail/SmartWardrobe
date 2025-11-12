@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 const CAMERA_KEY = "smartwardrobe_camera";
 
+type Category = "blouse" | "pants" | "shoes" | "jackets" | "dresses" | "accessories";
+
 const CameraGallery: React.FC = () => {
-  const [photos, setPhotos] = useState<{ id: string; name: string; category: string; image: string }[]>([]);
-  const [filter, setFilter] = useState<"blouse" | "pants" | "shoes" | "all">("all");
+  const [photos, setPhotos] = useState<{ id: string; name: string; category: Category; image: string }[]>([]);
+  const [category, setCategory] = useState<Category | "all">("all");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,23 +21,41 @@ const CameraGallery: React.FC = () => {
     localStorage.setItem(CAMERA_KEY, JSON.stringify(filtered));
   };
 
+  const categories: { key: Category | "all"; label: string; emoji?: string }[] = [
+    { key: "all", label: "All" },
+    { key: "blouse", label: "Blouses", emoji: "👚" },
+    { key: "pants", label: "Pants", emoji: "👖" },
+    { key: "shoes", label: "Shoes", emoji: "👟" },
+    { key: "jackets", label: "Jackets", emoji: "🧥" },
+    { key: "dresses", label: "Dresses", emoji: "👗" },
+    { key: "accessories", label: "Accessories", emoji: "👜" },
+  ];
+
   return (
     <div className="page-container">
       <div className="section">
         <h1>📸 Camera Photos</h1>
-        <button className="add-btn" onClick={() => navigate("/closet")}>
+        <button className="add-btn mb-4" onClick={() => navigate("/closet")}>
           ← Back to Closet
         </button>
 
-        {/* Category Filters */}
-        <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "1rem" }}>
-          {["all", "blouse", "pants", "shoes"].map((cat) => (
-            <button key={cat} className="add-btn px-3 py-1 text-sm" onClick={() => setFilter(cat as any)}>
-              {cat === "blouse" ? "👚 Blouses" : cat === "pants" ? "👖 Pants" : cat === "shoes" ? "👟 Shoes" : "All"}
-            </button>
-          ))}
+        {/* Category Selector */}
+        <div style={{ margin: "1rem 0", textAlign: "center" }}>
+          <label className="text-gray-700 font-medium mr-2">Select Category:</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as Category | "all")}
+            className="add-btn px-3 py-1 text-sm rounded-md"
+          >
+            {categories.map((cat) => (
+              <option key={cat.key} value={cat.key}>
+                {cat.emoji ? `${cat.emoji} ${cat.label}` : cat.label}
+              </option>
+            ))}
+          </select>
         </div>
 
+        {/* Photo Grid */}
         <div
           style={{
             display: "grid",
@@ -45,7 +65,7 @@ const CameraGallery: React.FC = () => {
           }}
         >
           {photos
-            .filter((p) => filter === "all" || p.category === filter)
+            .filter((p) => category === "all" || p.category === category)
             .map((p) => (
               <div
                 key={p.id}
@@ -62,7 +82,17 @@ const CameraGallery: React.FC = () => {
                   style={{ width: "100%", height: "100px", objectFit: "cover", borderRadius: "1rem" }}
                 />
                 <p style={{ fontSize: "0.9rem", margin: "0.3rem 0" }}>
-                  {p.category === "blouse" ? "👚 Blouse" : p.category === "pants" ? "👖 Pants" : "👟 Shoes"}
+                  {p.category === "blouse"
+                    ? "👚 Blouse"
+                    : p.category === "pants"
+                    ? "👖 Pants"
+                    : p.category === "shoes"
+                    ? "👟 Shoes"
+                    : p.category === "jackets"
+                    ? "🧥 Jacket"
+                    : p.category === "dresses"
+                    ? "👗 Dress"
+                    : "👜 Accessories"}
                 </p>
                 <button
                   onClick={() => deletePhoto(p.id)}

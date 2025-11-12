@@ -6,7 +6,9 @@ const UPLOAD_KEY = "smartwardrobe_uploads";
 
 const Closet: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [category, setCategory] = useState<"blouse" | "pants" | "shoes">("blouse");
+  const [category, setCategory] = useState<
+    "blouse" | "pants" | "shoes" | "jacket" | "dress" | "accessories"
+  >("blouse");
   const navigate = useNavigate();
 
   const handleAddItem = async (
@@ -47,12 +49,25 @@ const Closet: React.FC = () => {
           <label className="text-gray-700 font-medium mr-2">Category:</label>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value as "blouse" | "pants" | "shoes")}
+            onChange={(e) =>
+              setCategory(
+                e.target.value as
+                  | "blouse"
+                  | "pants"
+                  | "shoes"
+                  | "jacket"
+                  | "dress"
+                  | "accessories"
+              )
+            }
             className="add-btn px-3 py-1 text-sm"
           >
             <option value="blouse">👚 Blouse</option>
             <option value="pants">👖 Pants</option>
             <option value="shoes">👟 Shoes</option>
+            <option value="jacket">🧥 Jacket</option>
+            <option value="dress">👗 Dress</option>
+            <option value="accessories">👜 Accessories</option>
           </select>
         </div>
 
@@ -75,7 +90,15 @@ const Closet: React.FC = () => {
         />
 
         {/* Buttons */}
-        <div style={{ display: "flex", gap: "1rem", justifyContent: "center", marginTop: "1rem" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "1rem",
+            justifyContent: "center",
+            marginTop: "1rem",
+            flexWrap: "wrap",
+          }}
+        >
           <button
             className="add-btn"
             onClick={() => document.getElementById("cameraInput")?.click()}
@@ -94,8 +117,16 @@ const Closet: React.FC = () => {
         </div>
 
         {/* Gallery Navigation */}
-        <div style={{ marginTop: "2rem" }}>
-          <button className="add-btn" onClick={() => navigate("/camera-gallery")} style={{ marginRight: "1rem" }}>
+        <div
+          style={{
+            marginTop: "2rem",
+            display: "flex",
+            gap: "1rem",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          <button className="add-btn" onClick={() => navigate("/camera-gallery")}>
             📷 View Taken Photos
           </button>
           <button className="add-btn" onClick={() => navigate("/upload-gallery")}>
