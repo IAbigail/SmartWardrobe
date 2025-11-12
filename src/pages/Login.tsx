@@ -1,12 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   signInWithEmailAndPassword,
   signInWithPopup,
+  GoogleAuthProvider,
 } from "firebase/auth";
+
 import { auth } from "../firebase/firebase";
 import Register from "./Register";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,19 +21,23 @@ export default function Login() {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      navigate("/"); 
     } catch (err: any) {
       setError("Login failed: " + err.message);
     }
   };
+  
 
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
+      navigate("/"); 
     } catch (err: any) {
       setError("Eroare la autentificarea cu Google: " + err.message);
     }
   };
+  
 
   if (showRegister) return <Register />;
 

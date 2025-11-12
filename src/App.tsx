@@ -11,34 +11,31 @@ import "./App.css";
 
 const App: React.FC = () => {
   const { currentUser } = useAuth();
+  console.log("App is rendering, currentUser:", currentUser);
 
-  // 🔒 Dacă utilizatorul nu e logat → arată Login
-  if (!currentUser) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "5rem" }}>
-        <h1>👗 SmartWardrobe</h1>
-        <Login />
-      </div>
-    );
-  }
-
-  // ✅ Dacă e logat → afișează aplicația
   return (
     <Router>
-      <div className="app-container">
-        {/* 🧭 Meniu vizibil pe toate paginile */}
-        <Menu />
+      {!currentUser ? (
+        <div style={{ textAlign: "center", marginTop: "5rem" }}>
+          <h1>👗 SmartWardrobe</h1>
+          <Login />
+        </div>
+      ) : (
+        <div className="app-container">
+          {/* 🧭 Menu visible on all pages */}
+          <Menu />
 
-        {/* 🔀 Rutele aplicației */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/weather" element={<Weather />} />
-          <Route path="/outfits" element={<Outfits />} />
-          <Route path="/closet" element={<Closet />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
+          {/* 🔀 App routes */}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/weather" element={<Weather />} />
+            <Route path="/outfits" element={<Outfits />} />
+            <Route path="/closet" element={<Closet />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
+      )}
     </Router>
   );
 };
