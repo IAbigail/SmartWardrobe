@@ -7,12 +7,13 @@ import Weather from "./pages/Weather";
 import Outfits from "./pages/Outfits";
 import Closet from "./pages/Closet";
 import Favorites from "./pages/Favorites";
+import CameraGallery from "./pages/CameraGallery";
+import UploadGallery from "./pages/UploadGallery";
 import "./App.css";
 
 const App: React.FC = () => {
   const { currentUser } = useAuth();
   console.log("App is rendering, currentUser:", currentUser);
-
   return (
     <Router>
       {!currentUser ? (
@@ -32,6 +33,11 @@ const App: React.FC = () => {
             <Route path="/outfits" element={<Outfits />} />
             <Route path="/closet" element={<Closet />} />
             <Route path="/favorites" element={<Favorites />} />
+
+            {/* 🆕 New gallery routes */}
+            <Route path="/camera-gallery" element={<CameraGallery />} />
+            <Route path="/upload-gallery" element={<UploadGallery />} />
+
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
