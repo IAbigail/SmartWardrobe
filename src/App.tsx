@@ -12,32 +12,35 @@ import UploadGallery from "./pages/UploadGallery";
 import "./App.css";
 
 const App: React.FC = () => {
-  const { currentUser } = useAuth();
-  console.log("App is rendering, currentUser:", currentUser);
+  const { currentUser, loading } = useAuth();
+
+  console.log("App is rendering, currentUser:", currentUser, "loading:", loading);
+
   return (
     <Router>
-      {!currentUser ? (
+      {/* 👇 NU RENDERUIESc NIMIC PÂNĂ NU SE ÎNCARCĂ SESIUNEA */}
+      {loading ? (
+        <div style={{ textAlign: "center", marginTop: "5rem" }}>
+          <h2>Loading...</h2>
+        </div>
+      ) : !currentUser ? (
+        /* 👇 DOAR DUPĂ CE loading este false arătăm Login */
         <div style={{ textAlign: "center", marginTop: "5rem" }}>
           <h1>👗 SmartWardrobe</h1>
           <Login />
         </div>
       ) : (
         <div className="app-container">
-          {/* 🧭 Menu visible on all pages */}
           <Menu />
 
-          {/* 🔀 App routes */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/weather" element={<Weather />} />
             <Route path="/outfits" element={<Outfits />} />
             <Route path="/closet" element={<Closet />} />
             <Route path="/favorites" element={<Favorites />} />
-
-            {/* 🆕 New gallery routes */}
             <Route path="/camera-gallery" element={<CameraGallery />} />
             <Route path="/upload-gallery" element={<UploadGallery />} />
-
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

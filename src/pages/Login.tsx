@@ -1,40 +1,38 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
-
-import { auth } from "../firebase/firebase";
+import { useAuth } from "../Context/AuthContext";
 import Register from "./Register";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { signIn, signInWithGoogle } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showRegister, setShowRegister] = useState(false);
 
+  // LOGIN NORMAL
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/"); 
-    } catch (err: any) {
-      setError("Login failed: " + err.message);
+    setError("");
+
+    const { error } = await signIn(email, password);
+
+    if (error) {
+      setError("Login failed: " + error.message);
+    } else {
+      navigate("/");
     }
   };
-  
 
+  // LOGIN GOOGLE
   const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      navigate("/"); 
-    } catch (err: any) {
-      setError("Eroare la autentificarea cu Google: " + err.message);
+    const { data, error } = await signInWithGoogle();
+  
+    if (error) {
+      console.error(error);
+      setError("Google login error: " + error.message);
     }
   };
   
@@ -44,6 +42,7 @@ export default function Login() {
   return (
     <div className="flex flex-col items-center mt-10 text-white">
       <h2 className="text-2xl font-bold mb-4">Login</h2>
+
       <form onSubmit={handleLogin} className="flex flex-col gap-3 w-64">
         <input
           type="email"
@@ -52,6 +51,7 @@ export default function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+
         <input
           type="password"
           placeholder="Password"
@@ -59,7 +59,9 @@ export default function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
         {error && <p className="text-red-400 text-sm">{error}</p>}
+
         <button className="bg-blue-500 p-2 rounded hover:bg-blue-600">
           Log in
         </button>
@@ -70,17 +72,17 @@ export default function Login() {
           onClick={handleGoogleLogin}
           className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
         >
-          🔐 Log in cu Google
+          🔐 Log in with Google
         </button>
       </div>
 
       <p className="mt-4 text-sm text-gray-300">
-        Nu ai cont?{" "}
+        Don't have an account?{" "}
         <button
           onClick={() => setShowRegister(true)}
           className="text-green-400 hover:underline"
         >
-          Creează unul
+          Create one
         </button>
       </p>
     </div>

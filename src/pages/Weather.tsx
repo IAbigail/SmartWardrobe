@@ -153,64 +153,68 @@ const Weather: React.FC = () => {
         transition: "background 1.5s ease",
       }}
     >
-      <div
-        style={{
-          background: cardTint,
-          borderRadius: "1.8rem",
-          boxShadow:
-            "0 15px 35px rgba(0,0,0,0.25), inset 0 0 25px rgba(255,255,255,0.06)",
-          backdropFilter: "blur(22px) saturate(160%)",
-          padding: "2.2rem 2rem",
-          maxWidth: "400px",
-          width: "95%",
-          textAlign: "center",
-          animation: "fadeIn 0.7s ease",
-        }}
-      >
-        <div
-          style={{
-            fontSize: "4rem",
-            marginBottom: "0.8rem",
-            textShadow: `0 0 35px ${glow}`,
-            animation: "float 3s ease-in-out infinite",
-          }}
-        >
-          {emoji}
-        </div>
+<div
+  style={{
+    background: cardTint,
+    borderRadius: "1.2rem",
+    boxShadow:
+      "0 6px 18px rgba(0,0,0,0.25), inset 0 0 14px rgba(255,255,255,0.05)",
+    backdropFilter: "blur(16px) saturate(150%)",
+    padding: "0.2rem 0.3rem", // ✅ less height (top/bottom), same width padding
+    maxWidth: "500px", // ✅ keep width the same
+    width: "95%",
+    textAlign: "center",
+    animation: "fadeIn 0.7s ease",
+    margin: "0 auto",
+  }}
+>
+  <div
+    style={{
+      fontSize: "3rem",
+      marginBottom: "0.3rem", // ✅ tighter vertical spacing
+      textShadow: `0 0 25px ${glow}`,
+      animation: "float 3s ease-in-out infinite",
+    }}
+  >
+    {emoji}
+  </div>
 
-        <h1
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            fontSize: "2.1rem",
-            color: textColor || "#2a1d14",
-            marginBottom: "0.6rem",
-          }}
-        >
-          Weather
-        </h1>
+  <h1
+    style={{
+      fontFamily: "'Playfair Display', serif",
+      fontSize: "1.7rem",
+      color: textColor || "#2a1d14",
+      marginBottom: "0.2rem",
+    }}
+  >
+    Weather
+  </h1>
 
-        <p
-          style={{
-            color: subTextColor || "#3d2f24",
-            fontSize: "1.2rem",
-            fontWeight: 500,
-            marginBottom: "1.2rem",
-          }}
-        >
-          {city} • {temperature}°C • {condition}
-        </p>
+  <p
+    style={{
+      color: subTextColor || "#3d2f24",
+      fontSize: "1rem",
+      fontWeight: 500,
+      marginBottom: "0.3rem",
+    }}
+  >
+    {city} • {temperature}°C • {condition}
+  </p>
 
-        <p
-          style={{
-            fontSize: "1rem",
-            color: subTextColor || "#5b4535",
-            opacity: 0.9,
-            fontStyle: "italic",
-          }}
-        >
-          {vibe}
-        </p>
-      </div>
+  <p
+    style={{
+      fontSize: "0.9rem",
+      color: subTextColor || "#5b4535",
+      opacity: 0.9,
+      fontStyle: "italic",
+    }}
+  >
+    {vibe}
+  </p>
+</div>
+
+
+
 
       <style>
         {`

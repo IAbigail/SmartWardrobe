@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/firebase";
+import { supabase } from "../supabase";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -10,17 +10,20 @@ export default function Register() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      setSuccess("Cont creat cu succes! Acum te poți loga 👏");
-      setEmail("");
-      setPassword("");
-      setError("");
-    } catch (err: any) {
-      setError(err.message);
-      setSuccess("");
+    setError("");
+  
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+  
+    if (error) {
+      setError(error.message);
+    } else {
+      setSuccess("Account created! You can log in 👏");
     }
   };
+  
 
   return (
     <div className="flex flex-col items-center mt-10 text-white">
