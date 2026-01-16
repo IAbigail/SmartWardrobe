@@ -8,12 +8,20 @@ require("dotenv").config();
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
-
+app.use(cors({
+    origin: ["http://localhost:5173", "http://localhost"],
+    credentials: true
+  }));
+  
 // PostgreSQL connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
+
+pool.query("SELECT 1")
+  .then(() => console.log("✅ Database connected"))
+  .catch(err => console.error("❌ Database connection failed:", err));
+
 
 // Create JWT token
 function createToken(user) {
@@ -40,29 +48,50 @@ function requireAuth(req, res, next) {
 }
 
 // REGISTER
-app.post("/api/register", async (req, res) => {
-  const { email, password } = req.body;
-
-  const hash = await bcrypt.hash(password, 10);
-
+app.post("/api/login", async (req, res) => {
   try {
+    const { email, password } = req.body;
+
+    console.log("LOGIN ATTEMPT:", email);
+
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password required" });
+    }
+
     const result = await pool.query(
-      "INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email",
-      [email, hash]
+      "SELECT * FROM users WHERE email = $1",
+      [email]
     );
 
+    if (result.rowCount === 0) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+
     const user = result.rows[0];
+
+    if (!user.password_hash) {
+      console.error("❌ password_hash missing in DB row");
+      return res.status(500).json({ error: "Server misconfiguration" });
+    }
+
+    const match = await bcrypt.compare(password, user.password_hash);
+
+    if (!match) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+
     const token = createToken(user);
 
-    return res.json({ user, token });
+    return res.json({
+      user: { id: user.id, email: user.email },
+      token,
+    });
   } catch (err) {
-    if (err.code === "23505")
-      return res.status(400).json({ error: "Email already exists" });
-
-    console.error(err);
-    return res.status(500).json({ error: "Server error" });
+    console.error("❌ LOGIN ERROR:", err);
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // LOGIN
 app.post("/api/login", async (req, res) => {
@@ -92,6 +121,8 @@ app.get("/api/me", requireAuth, (req, res) => {
   return res.json({ user: { id: req.user.id, email: req.user.email } });
 });
 
-app.listen(process.env.PORT, () => {
-  console.log("Server running on http://localhost:" + process.env.PORT);
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log("Server running on http://localhost:" + PORT);
 });
+

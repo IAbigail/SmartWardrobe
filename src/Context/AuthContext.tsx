@@ -1,66 +1,125 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "../supabase";
+
+interface User {
+  id: number;
+  email: string;
+}
 
 interface AuthContextType {
-  currentUser: any;
+  currentUser: User | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<any>;
-  signIn: (email: string, password: string) => Promise<any>;
-  signInWithGoogle: () => Promise<any>;
-  logout: () => Promise<void>;
+  signUp: (email: string, password: string) => Promise<{ error?: any }>;
+  signIn: (email: string, password: string) => Promise<{ error?: any }>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const API_URL = " "; // backend server
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // 🔄 Check if we have a valid JWT token on startup
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setCurrentUser(data.session?.user ?? null);
+    const token = localStorage.getItem("authToken");
+    if (!token) {
       setLoading(false);
-    });
+      return;
+    }
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setCurrentUser(session?.user ?? null);
-    });
+    // Validate token with backend
+    (async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    return () => {
-      listener.subscription.unsubscribe();
-    };
+        if (res.ok) {
+          const data = await res.json();
+          setCurrentUser(data.user);
+        } else {
+          localStorage.removeItem("authToken");
+          setCurrentUser(null);
+        }
+      } catch (err) {
+        console.error(err);
+        localStorage.removeItem("authToken");
+        setCurrentUser(null);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
-  const signUp = (email: string, password: string) =>
-    supabase.auth.signUp({ email, password });
+  // REGISTER USER
+  const signUp = async (email: string, password: string) => {
+    try {
+      const res = await fetch(`${API_URL}/api/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-  const signIn = (email: string, password: string) =>
-    supabase.auth.signInWithPassword({ email, password });
+      const data = await res.json();
 
-  const signInWithGoogle = () => {
-    return supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: "http://localhost:5173", 
-        skipBrowserRedirect: false,
-        queryParams: {
-          prompt: "select_account",
-        },
-      },
-    });
+      if (!res.ok) {
+        return { error: data.error };
+      }
+
+      localStorage.setItem("authToken", data.token);
+      setCurrentUser(data.user);
+
+      return {};
+    } catch (err) {
+      console.error(err);
+      return { error: "Network error" };
+    }
   };
-  
-  
-  
 
-  const logout = async () => {
-    await supabase.auth.signOut();
+  // LOGIN USER
+  const signIn = async (email: string, password: string) => {
+    try {
+      const res = await fetch(`${API_URL}/api/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        return { error: data.error };
+      }
+
+      localStorage.setItem("authToken", data.token);
+      setCurrentUser(data.user);
+
+      return {};
+    } catch (err) {
+      console.error(err);
+      return { error: "Network error" };
+    }
+  };
+
+  // LOGOUT
+  const logout = () => {
+    localStorage.removeItem("authToken");
     setCurrentUser(null);
   };
 
   return (
     <AuthContext.Provider
-      value={{ currentUser, loading, signUp, signIn, signInWithGoogle, logout }}
+      value={{
+        currentUser,
+        loading,
+        signUp,
+        signIn,
+        logout,
+      }}
     >
       {!loading && children}
     </AuthContext.Provider>

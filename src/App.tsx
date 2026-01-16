@@ -9,6 +9,7 @@ import Closet from "./pages/Closet";
 import Favorites from "./pages/Favorites";
 import CameraGallery from "./pages/CameraGallery";
 import UploadGallery from "./pages/UploadGallery";
+import Register from "./pages/Register";
 import "./App.css";
 
 const App: React.FC = () => {
@@ -23,13 +24,18 @@ const App: React.FC = () => {
         <div style={{ textAlign: "center", marginTop: "5rem" }}>
           <h2>Loading...</h2>
         </div>
-      ) : !currentUser ? (
-        /* 👇 DOAR DUPĂ CE loading este false arătăm Login */
-        <div style={{ textAlign: "center", marginTop: "5rem" }}>
-          <h1>👗 SmartWardrobe</h1>
-          <Login />
-        </div>
-      ) : (
+) : currentUser ? (
+      <div style={{ textAlign: "center", marginTop: "5rem" }}>
+        <h1>👗 SmartWardrobe</h1>
+    
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    )
+     : (
         <div className="app-container">
           <Menu />
 

@@ -1,12 +1,13 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { supabase } from "../supabase";
+import { useAuth } from "../Context/AuthContext"; 
 import "./Menu.css";
 
 const Menu: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    logout();
     navigate("/"); // redirecționează spre login
   };
 
@@ -18,7 +19,6 @@ const Menu: React.FC = () => {
       <NavLink to="/closet" className="menu-item">📸</NavLink>
       <NavLink to="/favorites" className="menu-item">❤️</NavLink>
 
-      {/* 🔥 Buton nou de logout */}
       <button onClick={handleLogout} className="menu-item logout-btn">
         🚪
       </button>
