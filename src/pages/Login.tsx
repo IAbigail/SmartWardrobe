@@ -16,7 +16,7 @@ export default function Login() {
 
     const result = await signIn(email, password);
 
-    if (result.error) {
+    if (result?.error) {
       setError(result.error);
     } else {
       navigate("/"); // redirect după login
@@ -24,14 +24,14 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center mt-10 text-white">
+    <div className="flex flex-col items-center mt-10">
       <h2 className="text-2xl font-bold mb-4">Autentificare</h2>
 
       <form onSubmit={handleLogin} className="flex flex-col gap-3 w-64">
         <input
           type="email"
           placeholder="Email"
-          className="p-2 rounded bg-gray-800"
+          className="p-2 rounded border"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -39,17 +39,31 @@ export default function Login() {
         <input
           type="password"
           placeholder="Parolă"
-          className="p-2 rounded bg-gray-800"
+          className="p-2 rounded border"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        <button className="bg-blue-500 p-2 rounded hover:bg-blue-600">
+        <button
+          type="submit"
+          className="bg-orange-500 text-white p-2 rounded hover:bg-orange-600"
+        >
           Intră în cont
         </button>
       </form>
+
+      {/* 🔽 REGISTER LINK */}
+      <p className="mt-4 text-sm">
+        Nu ai cont?{" "}
+        <span
+          className="text-orange-600 font-semibold cursor-pointer hover:underline"
+          onClick={() => navigate("/register")}
+        >
+          Creează un cont
+        </span>
+      </p>
     </div>
   );
 }

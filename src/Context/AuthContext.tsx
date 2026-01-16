@@ -8,54 +8,35 @@ interface User {
 interface AuthContextType {
   currentUser: User | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<{ error?: any }>;
-  signIn: (email: string, password: string) => Promise<{ error?: any }>;
+  signUp: (email: string, password: string) => Promise<{ error?: string }>;
+  signIn: (email: string, password: string) => Promise<{ error?: string }>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = " "; // backend server
+// 🔴 APEL DIRECT CĂTRE BACKEND (FĂRĂ PROXY)
+const API_URL = "http://localhost:4000";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Check if we have a valid JWT token on startup
   useEffect(() => {
     const token = localStorage.getItem("authToken");
+  
     if (!token) {
       setLoading(false);
       return;
     }
-
-    // Validate token with backend
-    (async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          setCurrentUser(data.user);
-        } else {
-          localStorage.removeItem("authToken");
-          setCurrentUser(null);
-        }
-      } catch (err) {
-        console.error(err);
-        localStorage.removeItem("authToken");
-        setCurrentUser(null);
-      } finally {
-        setLoading(false);
-      }
-    })();
+  
+    // optionally decode token later
+    setCurrentUser({ id: 0, email: "loading@user" });
+    setLoading(false);
   }, []);
+  
 
-  // REGISTER USER
+  // ✅ REGISTER
   const signUp = async (email: string, password: string) => {
     try {
       const res = await fetch(`${API_URL}/api/register`, {
@@ -67,7 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        return { error: data.error };
+        return { error: data?.error || "Register failed" };
       }
 
       localStorage.setItem("authToken", data.token);
@@ -80,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // LOGIN USER
+  // ✅ LOGIN
   const signIn = async (email: string, password: string) => {
     try {
       const res = await fetch(`${API_URL}/api/login`, {
@@ -92,7 +73,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        return { error: data.error };
+        return { error: data?.error || "Login failed" };
       }
 
       localStorage.setItem("authToken", data.token);
@@ -105,7 +86,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // LOGOUT
+  // ✅ LOGOUT
   const logout = () => {
     localStorage.removeItem("authToken");
     setCurrentUser(null);

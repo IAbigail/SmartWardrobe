@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./Context/AuthContext";
+
 import Login from "./pages/Login";
+import Register from "./pages/Register";
+
 import Menu from "./pages/Menu";
 import Home from "./pages/Home";
 import Weather from "./pages/Weather";
@@ -9,33 +12,34 @@ import Closet from "./pages/Closet";
 import Favorites from "./pages/Favorites";
 import CameraGallery from "./pages/CameraGallery";
 import UploadGallery from "./pages/UploadGallery";
-import Register from "./pages/Register";
+
 import "./App.css";
 
 const App: React.FC = () => {
   const { currentUser, loading } = useAuth();
 
-  console.log("App is rendering, currentUser:", currentUser, "loading:", loading);
+  console.log("App render → currentUser:", currentUser, "loading:", loading);
 
   return (
     <Router>
-      {/* 👇 NU RENDERUIESc NIMIC PÂNĂ NU SE ÎNCARCĂ SESIUNEA */}
       {loading ? (
+        // ⏳ LOADING
         <div style={{ textAlign: "center", marginTop: "5rem" }}>
           <h2>Loading...</h2>
         </div>
-) : currentUser ? (
-      <div style={{ textAlign: "center", marginTop: "5rem" }}>
-        <h1>👗 SmartWardrobe</h1>
-    
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-    )
-     : (
+      ) : !currentUser ? (
+        // 🔒 NOT LOGGED IN → ALWAYS LOGIN / REGISTER
+        <div style={{ textAlign: "center", marginTop: "5rem" }}>
+          <h1>👗 SmartWardrobe</h1>
+
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </div>
+      ) : (
+        // 🔓 LOGGED IN → APP
         <div className="app-container">
           <Menu />
 
