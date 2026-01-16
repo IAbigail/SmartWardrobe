@@ -143,16 +143,17 @@ const Weather: React.FC = () => {
 
   return (
     <div
-      style={{
-        minHeight: "100vh",
-        background: gradient,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "2rem",
-        transition: "background 1.5s ease",
-      }}
-    >
+  style={{
+    height: "100vh",
+    background: gradient,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "1rem",
+    transition: "background 1.5s ease",
+    overflow: "hidden",
+  }}
+>
 <div
   style={{
     background: cardTint,
@@ -198,8 +199,8 @@ const Weather: React.FC = () => {
       marginBottom: "0.3rem",
     }}
   >
-    {city} • {temperature}°C • {condition}
-  </p>
+{city} • {Math.floor(temperature)}°C • {condition}
+</p>
 
   <p
     style={{
