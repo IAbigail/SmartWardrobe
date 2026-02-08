@@ -12,8 +12,30 @@ const UploadGallery: React.FC = () => {
 
   useEffect(() => {
     const saved = localStorage.getItem(UPLOAD_KEY);
-    if (saved) setPhotos(JSON.parse(saved));
+    if (!saved) return;
+  
+    const parsed = JSON.parse(saved);
+  
+    const migrated = parsed.map((p: any) => {
+      const map: Record<string, Category> = {
+        jacket: "jackets",
+        jackets: "jackets",
+        dress: "dresses",
+        dresses: "dresses",
+        accessory: "accessories",
+        accessories: "accessories",
+      };
+  
+      return {
+        ...p,
+        category: map[p.category] ?? p.category,
+      };
+    });
+  
+    setPhotos(migrated);
+    localStorage.setItem(UPLOAD_KEY, JSON.stringify(migrated));
   }, []);
+  
 
   const deletePhoto = (id: string) => {
     const filtered = photos.filter((p) => p.id !== id);
